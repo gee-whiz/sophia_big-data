@@ -6,7 +6,7 @@ import glob
 from zipfile import ZipFile
 
 
-with ZipFile('dataset.zip', 'r') as zipObj:
+with ZipFile('../dataset.zip', 'r') as zipObj:
    # Extract all the contents of zip file in current directory
    zipObj.extractall()
 
