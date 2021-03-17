@@ -16,7 +16,7 @@ with ZipFile('dataset.zip', 'r') as zipObj:
    zipObj.extractall()
 
 path = r'dataset' 
-all_files = glob.glob(path + "/*.csv")
+all_files = glob.glob(path + "/*_bme280sof.csv")
 
 
 def get_fnames():
@@ -30,22 +30,14 @@ def get_fnames():
 file_names = get_fnames()
 df = pd.concat(file_names, axis=0, ignore_index=True, sort=True)
 
-
 print(df.size)
-
+print(df.head().to_string())
 #Preprocess (drop nulls and sort)
-
-
-df['P1'] = df['P1'].fillna(0)
-df['P2'] = df['P2'].fillna(0)
-df['pressure'] = df['pressure'].fillna(0)
-df['temperature'] = df['temperature'].fillna(0)
-
+df.dropna(subset=["pressure","humidity", 'temperature'])
 df.sort_values(by=['timestamp'])
-df=df.iloc[int(len(df)*0.33):int(len(df)*0.66)]
+df = df[df.sensor_id == 3096]
 
-
-X_train, x_test, Y_train, y_test = train_test_split(df[['pressure']], df[['P1']], test_size=0.2)
+X_train, x_test, Y_train, y_test = train_test_split(df[['temperature']], df[['humidity']], test_size=0.2)
 
 
 #train
@@ -57,11 +49,7 @@ score = reg_model.score(X_train, Y_train)
 prediction = reg_model.predict(x_test)
 
 #Print  score
-print("PM2 concentration  Linear reg Score: ", score)
-
-print("Linear mean: ", prediction.mean())
-
-
+print("Score: ", score)
 
 # The coefficients
 print('Coefficients: \n', reg_model.coef_)
@@ -72,7 +60,9 @@ print('Coefficient of determination: %.2f'
       % r2_score(y_test, prediction))
 
 
-plt.plot(x_test,y_test,".",label="Train data")
-plt.plot(x_test,prediction,label="P2 Score="+str(score))
+plt.plot(x_test,y_test,".",label="temperature")
+plt.plot(x_test,prediction,label="Score="+str(score))
 plt.legend()
 plt.show()
+
+
