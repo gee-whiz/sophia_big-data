@@ -61,5 +61,5 @@ fig, ax = plt.subplots(figsize=(16,10))
 plt.plot(x_test,y_test,".",label="temperature")
 plt.plot(x_test,prediction,label="Score="+str(score))
 plt.legend()
-plt.show()
+plt.show(block=True)
 
