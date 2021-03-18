@@ -12,6 +12,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from scipy import stats
 import setup
 
+path = r'dataset' 
 
 all_files = glob.glob(path + "/*_bme280sof.csv")
 #we join our csv files
