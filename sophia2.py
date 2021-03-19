@@ -22,27 +22,23 @@ df = pd.concat(file_names, axis=0, ignore_index=True, sort=True)
 
 print(df.size)
 
-
-
-
 #Preprocess (drop nulls and sort)
-df.dropna(subset=["P1","P1"])
-df.sort_values(by=['timestamp'])
+df = df.dropna(subset=["P1","P2"])
+df = df.sort_values(by=['timestamp'])
 
+print(df.head().to_string())
+
+#Removing the outliers 
 df['z_score_p1']=stats.zscore(df['P1'])
 df = df.loc[df['z_score_p1'].abs()<=3]
 
 df['z_score_p2']=stats.zscore(df['P2'])
 df = df.loc[df['z_score_p2'].abs()<=3]
 
-print(df.head().to_string())
-#Removing the outliers 
-
 
 print("The dataset SDS has %s sensors" % (df["sensor_id"].nunique()))
 
 X_train, x_test, Y_train, y_test = train_test_split(df[['P1']], df[['P2']], test_size=0.2)
-
 
 #train
 reg_model = LinearRegression()
@@ -67,5 +63,5 @@ fig, ax = plt.subplots(figsize=(16,10))
 plt.plot(x_test,y_test,".",label="P1")
 plt.plot(x_test,prediction,label="Score="+str(score))
 plt.legend()
-plt.show()
+plt.show(block=True)
 
